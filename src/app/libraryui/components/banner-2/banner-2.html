@@ -1,0 +1,51 @@
+<!-- LibraryUI : Banner 2 -->
+<section class="min-h-[calc(100vh-57px)] bg-[#0a0a14] grid grid-cols-1 lg:grid-cols-2 items-center gap-16 px-[5%] py-20 font-sans text-slate-100">
+
+  <div>
+    <span class="inline-block bg-indigo-500/15 border border-indigo-500/35 text-indigo-300 px-4 py-1.5 rounded-full text-[0.8rem] font-semibold mb-7">
+      {{ badge }}
+    </span>
+
+    <h1 class="text-[clamp(2.25rem,5vw,3.5rem)] font-black leading-[1.1] tracking-[-0.03em] mb-5">
+      Apprenez le code.
+      <em class="not-italic bg-linear-to-br from-indigo-400 to-violet-400 bg-clip-text text-transparent">Construisez votre avenir.</em>
+    </h1>
+
+    <p class="text-slate-100/55 text-[1.05rem] leading-[1.75] max-w-120 mb-8">
+      Des formations pratiques en développement, design et data, avec des projets concrets et des certificats.
+    </p>
+
+    <div class="flex gap-4 mb-10 flex-wrap">
+      <a routerLink="/catalogue"
+         class="px-7 py-3 rounded-[0.625rem] text-[0.9rem] font-semibold bg-indigo-600 hover:bg-indigo-700 hover:-translate-y-px text-white transition-all">
+        Explorer le catalogue
+      </a>
+      <a routerLink="/dashboard"
+         class="px-7 py-3 rounded-[0.625rem] text-[0.9rem] font-semibold text-indigo-200 border border-indigo-500/40 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all">
+        Mon espace
+      </a>
+    </div>
+
+    <div class="flex gap-10 flex-wrap">
+      @for (s of stats; track s.l) {
+        <div>
+          <strong class="block text-[1.4rem] font-extrabold text-gray-100">{{ s.v }}</strong>
+          <span class="text-[0.8rem] text-slate-100/45">{{ s.l }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="bg-[#0d1117] border border-[#21262d] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+    <div class="flex gap-1.5 px-4 py-3 bg-[#161b22]">
+      <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span>
+      <span class="w-3 h-3 rounded-full bg-[#febc2e]"></span>
+      <span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+    </div>
+    <pre class="px-6 py-5 text-[0.85rem] font-mono text-[#8b949e] leading-loose m-0 whitespace-pre-wrap"><span class="c-dim">$</span> ng new mon-projet
+<span class="c-grn">✔</span> Projet créé
+<span class="c-dim">$</span> cd mon-projet &amp;&amp; ng serve
+<span class="c-blu">➜</span> Local: <span class="c-grn">http://localhost:4200</span>
+<span class="c-grn">✔</span> Prêt en <span class="c-ylw">248ms</span></pre>
+  </div>
+</section>

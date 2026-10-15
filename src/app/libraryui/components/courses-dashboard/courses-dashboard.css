@@ -1,0 +1,43 @@
+/* Indicateur du menu actif (barre indigo à droite de l'icône) */
+.cd-nav-active::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: #818cf8;
+  border-radius: 2px 0 0 2px;
+}
+
+/* Sur mobile, l'indicateur passe à gauche */
+@media (max-width: 768px) {
+  .cd-nav-active::before {
+    right: auto;
+    left: 0;
+    border-radius: 0 2px 2px 0;
+  }
+}
+
+/* Texte limité à 2 lignes */
+.cd-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Dégradé sous la barre de la vidéo */
+.cd-video-bar {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+}
+
+/* Barres de défilement fines */
+.cd-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+.cd-scroll::-webkit-scrollbar { width: 4px; }
+.cd-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }

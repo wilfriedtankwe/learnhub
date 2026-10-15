@@ -1,0 +1,38 @@
+<!-- LibraryUI : Témoignage -->
+<div class="mx-auto w-full max-w-5xl px-6 py-16 text-center">
+  <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">{{ heading() }}</h2>
+  <p class="mx-auto mt-4 max-w-2xl text-gray-500">{{ subheading() }}</p>
+
+  <div class="mt-14 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+    @for (testimonial of testimonials(); track testimonial.id) {
+      <article class="flex flex-col items-center">
+        <img
+          [src]="avatarUrl(testimonial)"
+          [alt]="testimonial.name"
+          loading="lazy"
+          class="h-24 w-24 rounded-full object-cover"
+        />
+
+        <h3 class="mt-5 text-base font-bold text-gray-900">{{ testimonial.name }}</h3>
+
+        <div
+          class="mt-2 flex items-center gap-0.5"
+          [attr.aria-label]="testimonial.rating + ' sur 5'"
+        >
+          @for (starIndex of stars; track starIndex) {
+            <svg
+              class="h-4 w-4 {{ starIndex < testimonial.rating ? 'text-amber-400' : 'text-gray-300' }}"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M10 1.5 12.47 6.9l5.94.77-4.36 4.09 1.15 5.87L10 14.77l-5.2 2.86 1.15-5.87L1.6 7.67l5.94-.77Z" />
+            </svg>
+          }
+        </div>
+
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-500">{{ testimonial.quote }}</p>
+      </article>
+    }
+  </div>
+</div>

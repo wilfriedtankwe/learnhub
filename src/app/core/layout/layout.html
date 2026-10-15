@@ -1,0 +1,80 @@
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6" aria-label="Navigation principale">
+
+    <a routerLink="/" class="flex items-center gap-2 text-lg font-bold text-indigo-600">
+      <span class="icon-[lucide--graduation-cap] size-6"></span> LearnHub
+    </a>
+
+    <!-- Liens (desktop) -->
+    <ul class="hidden items-center gap-6 md:flex">
+      @for (l of links; track l.path) {
+        <li>
+          <a [routerLink]="l.path"
+             routerLinkActive
+             #rla="routerLinkActive"
+             [routerLinkActiveOptions]="{ exact: l.exact }"
+             ariaCurrentWhenActive="page"
+             class="relative py-1 text-sm font-medium transition-colors"
+             [class]="rla.isActive ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'">
+            {{ l.label }}
+            @if (rla.isActive) {
+              <span class="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-indigo-600"></span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <!-- Panier -->
+      <a routerLink="/panier"
+         routerLinkActive
+         #cartLink="routerLinkActive"
+         aria-label="Panier"
+         class="relative transition-colors"
+         [class]="cartLink.isActive ? 'text-indigo-600' : 'text-slate-700 hover:text-indigo-600'">
+        <span class="icon-[lucide--shopping-cart] size-6"></span>
+        @if (cart().length) {
+          <span class="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-indigo-600 text-xs text-white">
+            {{ cart().length }}
+          </span>
+        }
+      </a>
+
+      <!-- Bouton menu (mobile) -->
+      <button type="button" class="md:hidden" aria-label="Menu"
+              [attr.aria-expanded]="menuOpen()"
+              (click)="menuOpen.set(!menuOpen())">
+        <span class="size-6" [class]="menuOpen() ? 'icon-[lucide--x]' : 'icon-[lucide--menu]'"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Menu mobile -->
+  @if (menuOpen()) {
+    <ul class="border-t border-slate-200 bg-white px-4 py-2 md:hidden">
+      @for (l of links; track l.path) {
+        <li>
+          <a [routerLink]="l.path"
+             routerLinkActive
+             #rlm="routerLinkActive"
+             [routerLinkActiveOptions]="{ exact: l.exact }"
+             ariaCurrentWhenActive="page"
+             class="block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+             [class]="rlm.isActive
+               ? 'bg-indigo-50 text-indigo-600'
+               : 'text-slate-700 hover:bg-slate-50'"
+             (click)="menuOpen.set(false)">
+            {{ l.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</header>
+
+<main class="min-h-[70vh]"><router-outlet /></main>
+
+<footer class="mt-16 border-t border-slate-200 bg-white py-8 text-center text-sm text-slate-500">
+  © 2026 LearnHub · Projet LibraryUI Challenge
+</footer>

@@ -1,0 +1,73 @@
+<section class="mx-auto max-w-6xl px-6 py-10">
+  <h1 class="text-3xl font-extrabold">Mon panier</h1>
+
+  @if (service.cart().length === 0) {
+    <div class="mt-8 rounded-xl bg-white p-10 text-center text-slate-500">
+      <p>Votre panier est vide.</p>
+      <a routerLink="/catalogue" class="mt-4 inline-block font-semibold text-indigo-600 hover:underline">
+        Parcourir le catalogue
+      </a>
+    </div>
+  } @else {
+
+    <!-- Liste des formations -->
+    <ul class="mt-6 divide-y divide-slate-200 rounded-xl bg-white">
+      @for (c of service.cart(); track c.id) {
+        <li class="p-4">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="font-semibold">{{ c.title }}</p>
+              <p class="text-sm text-slate-500">{{ c.instructor }} · {{ c.hours }} h</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="font-bold">{{ c.price }} €</span>
+              <button type="button" (click)="pendingRemove.set(c.id)"
+                      class="text-sm text-red-600 hover:underline">Retirer</button>
+            </div>
+          </div>
+
+          @if (pendingRemove() === c.id) {
+            <div class="mt-3">
+              <app-confirmation-inline
+                variant="danger"
+                message="Retirer cette formation du panier ?"
+                cancelLabel="Non"
+                confirmLabel="Oui, retirer"
+                (cancelled)="pendingRemove.set(null)"
+                (confirmed)="remove(c.id)" />
+            </div>
+          }
+        </li>
+      }
+    </ul>
+
+    <!-- Email -->
+    <div class="mt-6 rounded-xl bg-white p-4">
+      <label for="email" class="text-sm font-semibold">Email pour recevoir votre confirmation</label>
+      <input id="email" type="email" placeholder="vous@exemple.com"
+             [value]="email()" (input)="email.set($any($event.target).value)"
+             class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+      @if (emailError()) {
+        <p class="mt-2 text-sm text-red-600" role="alert">Veuillez saisir un email valide.</p>
+      }
+    </div>
+
+    <!-- Coupon + récapitulatif -->
+    <div class="mt-8">
+      <app-coupon (checkout)="askCheckout()" />
+    </div>
+
+    <!-- Confirmation de paiement -->
+    @if (confirmingCheckout()) {
+      <div class="mt-6">
+        <app-confirmation-inline
+          variant="warning"
+          [message]="'Vous allez payer ' + service.totalToPay() + ' € pour ' + service.cart().length + ' formation(s).'"
+          cancelLabel="Annuler"
+          confirmLabel="Payer"
+          (cancelled)="confirmingCheckout.set(false)"
+          (confirmed)="pay()" />
+      </div>
+    }
+  }
+</section>

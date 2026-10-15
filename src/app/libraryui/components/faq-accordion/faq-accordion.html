@@ -1,0 +1,182 @@
+<!-- LibraryUI : FAQ -->
+<div class="max-w-275 mx-auto p-8 font-sans max-md:p-4">
+
+  <!-- En-tête -->
+  <div class="text-center mb-12">
+    <h2 class="faq-title-gradient text-5xl font-extrabold m-0 mb-3 max-md:text-4xl">Questions fréquentes</h2>
+    <p class="text-lg text-gray-500 m-0 mb-8 max-w-150 mx-auto">
+      Trouvez rapidement des réponses. {{ getTotalQuestions() }} questions dans notre base de connaissances.
+    </p>
+
+    <!-- Recherche -->
+    <div class="flex items-center gap-3 max-w-150 mx-auto px-5 py-3.5 bg-white border-2 border-gray-200 rounded-2xl shadow-sm transition-all focus-within:border-indigo-500">
+      <svg class="w-5 h-5 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher une question..."
+             class="flex-1 border-none bg-transparent text-base text-gray-700 placeholder-gray-400 outline-none">
+      @if (searchQuery) {
+        <button type="button" aria-label="Effacer la recherche"
+                class="p-1.5 bg-gray-100 border-none rounded-full text-gray-500 cursor-pointer hover:bg-gray-200 transition-colors"
+                (click)="searchQuery = ''">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <div class="grid grid-cols-[220px_1fr] gap-8 max-md:grid-cols-1">
+
+    <!-- Catégories -->
+    @if (!searchQuery) {
+      <nav class="flex flex-col gap-2 sticky top-20 h-fit max-md:static max-md:flex-row max-md:flex-wrap">
+        @for (cat of categories; track cat.id) {
+          <button type="button"
+                  class="flex items-center gap-3 px-4 py-3.5 border-2 rounded-xl text-sm font-medium text-left cursor-pointer transition-all max-md:flex-1 max-md:min-w-35 max-md:justify-center"
+                  [class]="activeCategory === cat.id
+              ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
+              : 'border-transparent bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
+                  (click)="selectCategory(cat.id)">
+            <ng-container *ngTemplateOutlet="catIcon; context: { id: cat.id, cls: 'w-5 h-5 shrink-0 max-md:hidden' }" />
+            <span class="flex-1">{{ cat.name }}</span>
+            <span class="px-2 py-0.5 rounded-full text-xs font-semibold transition-colors"
+                  [class]="activeCategory === cat.id ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'">
+              {{ cat.items.length }}
+            </span>
+          </button>
+        }
+      </nav>
+    }
+
+    <!-- Liste -->
+    <div class="min-w-0" [class]="searchQuery ? 'col-span-full' : ''">
+
+      <!-- Barre d'actions -->
+      <div class="flex items-center justify-between mb-6 max-md:flex-col max-md:items-start max-md:gap-3">
+        @if (searchQuery) {
+          <span class="text-sm text-gray-500 font-medium">
+            @if (getFilteredCategories().length > 0) {
+              {{ getSearchResultsCount() }} résultat(s) trouvé(s)
+            } @else {
+              Aucun résultat trouvé
+            }
+          </span>
+        } @else {
+          <span></span>
+        }
+        <div class="flex gap-3">
+          <button type="button" class="px-3 py-2 bg-transparent border-none text-xs text-gray-500 cursor-pointer rounded-md hover:bg-gray-100 hover:text-gray-700 transition-colors" (click)="expandAll()">
+            Tout ouvrir
+          </button>
+          <button type="button" class="px-3 py-2 bg-transparent border-none text-xs text-gray-500 cursor-pointer rounded-md hover:bg-gray-100 hover:text-gray-700 transition-colors" (click)="collapseAll()">
+            Tout fermer
+          </button>
+        </div>
+      </div>
+
+      <!-- Résultats de recherche -->
+      @if (searchQuery) {
+        @if (getFilteredCategories().length > 0) {
+          @for (cat of getFilteredCategories(); track cat.id) {
+            <div class="mb-8 last:mb-0">
+              <h3 class="flex items-center gap-2.5 text-lg font-semibold text-gray-700 m-0 mb-4">
+                <ng-container *ngTemplateOutlet="catIcon; context: { id: cat.id, cls: 'w-5 h-5 text-indigo-600' }" />
+                {{ cat.name }}
+              </h3>
+              <ng-container *ngTemplateOutlet="accordionList; context: { items: cat.items }" />
+            </div>
+          }
+        } @else {
+          <div class="text-center py-16 px-8 bg-gray-50 rounded-2xl">
+            <h3 class="text-xl text-gray-700 m-0 mb-2">Aucun résultat trouvé</h3>
+            <p class="text-gray-500 m-0 mb-6">Essayez d'autres termes ou parcourez les catégories.</p>
+            <button type="button" class="px-6 py-3 bg-indigo-600 text-white font-semibold text-sm rounded-lg border-none cursor-pointer hover:bg-indigo-700 transition-colors" (click)="searchQuery = ''">
+              Voir toutes les questions
+            </button>
+          </div>
+        }
+      }
+
+      <!-- Vue par catégorie -->
+      @if (!searchQuery && getActiveCategory()) {
+        <div class="mb-8">
+          <h3 class="flex items-center gap-2.5 text-lg font-semibold text-gray-700 m-0 mb-4">
+            <ng-container *ngTemplateOutlet="catIcon; context: { id: getActiveCategory()!.id, cls: 'w-5 h-5 text-indigo-600' }" />
+            {{ getActiveCategory()!.name }}
+          </h3>
+          <ng-container *ngTemplateOutlet="accordionList; context: { items: getActiveCategory()!.items }" />
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Bloc contact -->
+  <div class="flex items-center justify-between gap-6 mt-12 px-8 py-6 bg-linear-to-br from-indigo-600 to-violet-600 rounded-2xl text-white max-md:flex-col max-md:text-center max-md:px-6 max-md:py-8">
+    <div>
+      <h3 class="text-lg font-semibold m-0 mb-1">Vous n'avez pas trouvé de réponse ?</h3>
+      <p class="text-sm opacity-90 m-0">Notre équipe support est là pour vous aider.</p>
+    </div>
+    <a href="mailto:support@learnhub.example"
+       class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 font-semibold text-sm rounded-lg no-underline hover:-translate-y-0.5 hover:shadow-lg transition-all shrink-0">
+      Contacter le support
+    </a>
+  </div>
+</div>
+
+<!-- ========== TEMPLATES RÉUTILISABLES ========== -->
+
+<!-- Icône selon la catégorie -->
+<ng-template #catIcon let-id="id" let-cls="cls">
+  <svg [class]="cls" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    @switch (id) {
+      @case ('general') { <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/> }
+      @case ('billing') { <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/> }
+      @case ('security') { <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/> }
+      @case ('support') { <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/> }
+    }
+  </svg>
+</ng-template>
+
+<!-- Liste d'accordéons -->
+<ng-template #accordionList let-items="items">
+  <div class="flex flex-col gap-3">
+    @for (item of items; track item.id) {
+      <div class="bg-white border rounded-xl overflow-hidden transition-all"
+           [class]="item.isOpen ? 'border-indigo-500 shadow-md' : 'border-gray-200 hover:border-gray-300'">
+
+        <button type="button"
+                class="flex items-center justify-between gap-4 w-full px-5 py-4 border-none cursor-pointer text-left transition-colors"
+                [class]="item.isOpen ? 'bg-gray-50' : 'bg-transparent hover:bg-gray-50'"
+                [attr.aria-expanded]="item.isOpen"
+                (click)="toggleItem(item)">
+          <span class="text-sm font-semibold text-gray-900 leading-relaxed">{{ item.question }}</span>
+          <span class="w-7 h-7 flex items-center justify-center rounded-full shrink-0 transition-colors"
+                [class]="item.isOpen ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              @if (!item.isOpen) { <line x1="12" y1="5" x2="12" y2="19"/> }
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </span>
+        </button>
+
+        @if (item.isOpen) {
+          <div class="faq-body-animate px-5 pb-5">
+            <p class="text-sm text-gray-500 leading-7 m-0 mb-4">{{ item.answer }}</p>
+            @if (item.helpful) {
+              <div class="flex items-center flex-wrap gap-4 pt-4 border-t border-gray-100">
+                <span class="text-xs text-gray-400">Cette réponse vous a-t-elle aidé ?</span>
+                <div class="flex gap-2">
+                  <button type="button" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-500 cursor-pointer hover:bg-gray-100 transition-colors" (click)="markHelpful(item, true)">
+                    Oui ({{ item.helpful.yes }})
+                  </button>
+                  <button type="button" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-500 cursor-pointer hover:bg-gray-100 transition-colors" (click)="markHelpful(item, false)">
+                    Non ({{ item.helpful.no }})
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

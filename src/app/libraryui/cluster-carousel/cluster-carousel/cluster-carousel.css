@@ -1,0 +1,44 @@
+/* Transition des cartes */
+.cc-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cartes latérales */
+.cc-card--prev,
+.cc-card--next {
+  width: 220px;
+  opacity: 0.6;
+  transform: scale(0.88);
+}
+
+/* Carte active */
+.cc-card--active {
+  width: 280px;
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Bouton « Voir » */
+.cc-btn:hover {
+  background: #4338ca;
+}
+
+/* Flèches */
+.cc-arrow:hover {
+  background: #1e293b;
+  border-color: #6366f1;
+  color: #fff;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .cc-card--prev,
+  .cc-card--next {
+    width: 130px;
+  }
+  .cc-card--active {
+    width: 200px;
+  }
+}

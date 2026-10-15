@@ -1,0 +1,25 @@
+<!-- LibraryUI : Cookie -->
+@if (visible()) {
+  <div role="dialog" aria-label="Consentement aux cookies"
+       class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[min(760px,calc(100vw-2rem))] bg-slate-800 text-slate-200 rounded-2xl px-7 py-5 flex flex-wrap items-center gap-5 shadow-[0_12px_40px_rgba(0,0,0,0.35)] z-9999 font-sans">
+
+    <svg class="w-7 h-7 shrink-0 text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/>
+      <path d="M8.5 8.5v.01M16 15.5v.01M12 12v.01"/>
+    </svg>
+
+    <p class="flex-1 min-w-48 text-sm leading-relaxed m-0">
+      Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre
+      <span class="text-indigo-400 underline">politique de cookies</span>.
+    </p>
+
+    <div class="flex gap-2.5 shrink-0">
+      <button type="button"
+              class="px-5 py-2.5 bg-indigo-600 text-white border-none rounded-2xl text-xs font-bold cursor-pointer hover:bg-indigo-700 transition-colors"
+              (click)="acceptAll()">Tout accepter</button>
+      <button type="button"
+              class="px-5 py-2.5 bg-transparent text-slate-400 border border-white/15 rounded-2xl text-xs font-semibold cursor-pointer hover:text-slate-200 hover:border-white/30 transition-colors"
+              (click)="decline()">Refuser</button>
+    </div>
+  </div>
+}

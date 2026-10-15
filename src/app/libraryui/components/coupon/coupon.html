@@ -1,0 +1,204 @@
+<!-- LibraryUI : Coupon -->
+<div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 font-sans">
+
+  <!-- COLONNE GAUCHE -->
+  <div>
+
+    <!-- Saisie du code -->
+    <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
+      <h2 class="text-base font-semibold text-gray-900 m-0 mb-4">Vous avez un code promo ?</h2>
+      <div class="flex gap-3">
+        <div class="flex-1 relative">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+          <input
+            type="text"
+            class="cp-input w-full py-3.5 pl-12 pr-4"
+            [value]="couponInput()"
+            (input)="couponInput.set($any($event.target).value)"
+            placeholder="Saisissez votre code"
+            [disabled]="isApplying()"
+            (keyup.enter)="applyCoupon()" />
+        </div>
+        <button
+          type="button"
+          class="px-6 py-3.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold min-w-28 cursor-pointer hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          (click)="applyCoupon()"
+          [disabled]="isApplying() || !couponInput().trim()">
+          @if (!isApplying()) {
+            Appliquer
+          } @else {
+            <svg class="w-4 h-4 mx-auto animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          }
+        </button>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="flex items-center gap-2 mt-3 px-3 py-3 bg-red-50 text-red-600 rounded-lg text-sm" role="alert">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {{ errorMessage() }}
+        </div>
+      }
+      @if (successMessage()) {
+        <div class="flex items-center gap-2 mt-3 px-3 py-3 bg-green-50 text-green-600 rounded-lg text-sm">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          {{ successMessage() }}
+        </div>
+      }
+    </div>
+
+    <!-- Coupon appliqué -->
+    @if (applied(); as a) {
+      <div class="bg-linear-to-br from-green-50 to-green-100 border-2 border-green-300 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-semibold text-green-700 m-0 mb-3">Coupon appliqué</h3>
+        <div class="flex items-center gap-4 flex-wrap">
+          <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <div class="flex-1 min-w-40">
+            <span class="block font-bold text-gray-900 text-lg tracking-wide">{{ a.code }}</span>
+            <span class="text-xs text-gray-500">{{ a.description }}</span>
+          </div>
+          <span class="text-lg font-bold text-green-700">-{{ money(discount()) }}</span>
+          <button
+            type="button"
+            class="px-3 py-2 bg-white border border-gray-200 rounded-md text-xs text-gray-500 cursor-pointer hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
+            (click)="removeCoupon()">
+            Retirer
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Coupons disponibles -->
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 m-0 mb-5">Coupons disponibles</h2>
+      <div class="flex flex-col gap-4">
+        @for (coupon of availableCoupons; track coupon.id) {
+          <div class="relative bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-200"
+               [class]="(applied()?.id === coupon.id ? 'border-2 border-green-500 ' : '') + (isEligible(coupon) ? 'hover:-translate-y-0.5 hover:shadow-md' : 'opacity-60')">
+
+            <div class="flex min-h-35">
+              <!-- Partie gauche colorée -->
+              <div class="w-32 sm:w-35 shrink-0 bg-linear-to-br from-indigo-600 to-violet-600 p-4 flex flex-col justify-center items-center text-white">
+                <div class="px-2 py-1 rounded text-[0.65rem] font-bold uppercase tracking-wide mb-2"
+                     [class]="coupon.type === 'percentage' ? 'bg-white/20' : 'bg-emerald-500/30'">
+                  {{ coupon.type === 'percentage' ? 'Pourcentage' : 'Montant fixe' }}
+                </div>
+                <div class="text-center">
+                  <span class="block text-4xl sm:text-5xl font-extrabold leading-none">
+                    {{ coupon.value }}{{ coupon.type === 'percentage' ? '%' : '€' }}
+                  </span>
+                  <span class="text-xs font-semibold tracking-widest opacity-90">OFFERTS</span>
+                </div>
+              </div>
+
+              <!-- Pointillés -->
+              <div class="relative w-5 flex flex-col items-center">
+                <div class="w-5 h-2.5 bg-slate-50 rounded-b-full"></div>
+                <div class="flex-1 border-l-2 border-dashed border-gray-200"></div>
+                <div class="w-5 h-2.5 bg-slate-50 rounded-t-full"></div>
+              </div>
+
+              <!-- Partie droite -->
+              <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <span class="text-[0.65rem] font-semibold text-gray-400 uppercase tracking-wide">Code</span>
+                  <span class="text-lg font-bold text-gray-900 tracking-wide">{{ coupon.code }}</span>
+                  <button
+                    type="button"
+                    aria-label="Copier le code"
+                    class="w-7 h-7 flex items-center justify-center bg-gray-100 border-none rounded text-gray-500 cursor-pointer hover:bg-gray-200 hover:text-indigo-600 transition-all"
+                    (click)="copyCouponCode(coupon.code)">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+                <p class="flex-1 text-sm text-gray-600 m-0 mb-3 leading-snug">{{ coupon.description }}</p>
+                <div class="flex gap-4 flex-wrap">
+                  @if (coupon.minPurchase) {
+                    <span class="text-xs text-gray-500">Min. {{ money(coupon.minPurchase) }}</span>
+                  }
+                  <span class="text-xs"
+                        [class]="isExpiringSoon(coupon.expiresAt) ? 'text-red-600 font-semibold' : 'text-gray-500'">
+                    @if (daysLeft(coupon.expiresAt) > 0) {
+                      {{ daysLeft(coupon.expiresAt) }} jour(s) restant(s)
+                    } @else {
+                      Expiré
+                    }
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bouton -->
+            <button
+              type="button"
+              class="w-full py-3.5 border-t border-gray-200 text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all disabled:cursor-not-allowed disabled:text-gray-400"
+              [class]="applied()?.id === coupon.id
+                ? 'bg-green-100 text-green-700'
+                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-indigo-600'"
+              (click)="selectCoupon(coupon)"
+              [disabled]="!isEligible(coupon) || applied()?.id === coupon.id">
+              @if (applied()?.id === coupon.id) {
+                ✓ Appliqué
+              } @else if (!coupon.isActive) {
+                Indisponible
+              } @else if (daysLeft(coupon.expiresAt) <= 0) {
+                Expiré
+              } @else if (coupon.minPurchase && subtotal() < coupon.minPurchase) {
+                Ajoutez {{ money(coupon.minPurchase - subtotal()) }} pour l'utiliser
+              } @else {
+                Utiliser ce coupon
+              }
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- COLONNE DROITE : récapitulatif -->
+  <div class="lg:order-last order-first">
+    <div class="bg-white rounded-xl p-6 shadow-sm lg:sticky lg:top-20">
+      <h3 class="text-lg font-semibold text-gray-900 m-0 mb-5 pb-4 border-b border-gray-200">Récapitulatif</h3>
+
+      <div class="mb-4">
+        <div class="flex justify-between py-2.5 text-sm text-gray-500">
+          <span>Sous-total</span><span>{{ money(subtotal()) }}</span>
+        </div>
+        @if (applied(); as a) {
+          <div class="flex justify-between py-2.5 text-sm text-green-600">
+            <span>Code {{ a.code }}</span>
+            <span>-{{ money(discount()) }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="flex justify-between py-4 border-t border-gray-200 text-xl font-bold text-gray-900">
+        <span>Total</span><span>{{ money(total()) }}</span>
+      </div>
+
+      @if (applied()) {
+        <div class="py-3 px-3 text-center bg-linear-to-br from-green-50 to-green-100 rounded-lg text-sm font-semibold text-green-700 mb-4">
+          Vous économisez {{ money(discount()) }} sur cette commande !
+        </div>
+      }
+
+      <button
+        type="button"
+        class="w-full py-4 bg-linear-to-br from-indigo-600 to-violet-600 text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(79,70,229,0.4)]"
+        (click)="checkout.emit()">
+        Passer au paiement
+      </button>
+    </div>
+
+    <div class="mt-6 p-5 bg-gray-100 rounded-xl">
+      <h4 class="text-sm font-semibold text-gray-700 m-0 mb-3">Comment utiliser un coupon ?</h4>
+      <ul class="m-0 pl-5 list-disc">
+        <li class="text-xs text-gray-500 leading-relaxed mb-1.5">Saisissez votre code ou cliquez sur « Utiliser ce coupon »</li>
+        <li class="text-xs text-gray-500 leading-relaxed mb-1.5">Un seul coupon par commande</li>
+        <li class="text-xs text-gray-500 leading-relaxed">Certains coupons exigent un montant minimum</li>
+      </ul>
+    </div>
+  </div>
+
+</div>

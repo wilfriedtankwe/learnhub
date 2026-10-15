@@ -1,0 +1,28 @@
+<!-- LibraryUI : Confirmation inline -->
+<div class="flex items-center gap-4 px-5 py-4 border rounded-xl sm:flex-row flex-col sm:text-left text-center font-sans"
+     [class]="styles().box"
+     role="alertdialog">
+
+  @if (variant() === 'warning') {
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#f59e0b" viewBox="0 0 16 16" class="shrink-0" aria-hidden="true">
+      <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
+      <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+    </svg>
+  }
+
+  <span class="flex-1 text-sm text-gray-700">{{ message() }}</span>
+
+  <div class="flex gap-2 sm:w-auto w-full sm:justify-start justify-center">
+    <button type="button"
+            class="px-4 py-2 bg-white border border-gray-200 text-gray-500 text-xs font-semibold rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+            (click)="cancelled.emit()">
+      {{ cancelLabel() }}
+    </button>
+    <button type="button"
+            class="px-4 py-2 text-white text-xs font-semibold rounded-md transition-colors cursor-pointer"
+            [class]="styles().confirm"
+            (click)="confirmed.emit()">
+      {{ confirmLabel() }}
+    </button>
+  </div>
+</div>

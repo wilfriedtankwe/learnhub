@@ -1,0 +1,26 @@
+<section class="mx-auto max-w-6xl px-6 pt-10">
+  <h1 class="text-3xl font-extrabold">Catalogue des formations</h1>
+  <p class="mt-2 text-slate-500">Choisissez votre prochaine compétence.</p>
+
+  <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <input type="search" placeholder="Rechercher une formation…"
+           [value]="service.search()"
+           (input)="service.search.set($any($event.target).value)"
+           class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 sm:max-w-xs" />
+
+    <div class="flex flex-wrap gap-2">
+      @for (c of categories; track c) {
+        <button type="button" (click)="service.category.set(c)"
+                class="rounded-full border px-3 py-1 text-sm font-medium transition-colors"
+                [class]="service.category() === c
+                  ? 'border-indigo-600 bg-indigo-600 text-white'
+                  : 'border-slate-300 bg-white text-slate-600 hover:border-indigo-400'">
+          {{ c }}
+        </button>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- LibraryUI : Products list shopping -->
+<app-product-list-favorite />
