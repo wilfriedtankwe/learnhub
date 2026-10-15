@@ -4,8 +4,8 @@
 
 Projet réalisé pour le **LibraryUI Challenge** (octobre 2026) avec **Angular** et les composants de **LibraryUI**.
 
-- 🔗 **Démo en ligne :** `https://VOTRE-DEMO.vercel.app`
-- 💻 **Code source :** `https://github.com/VOTRE-COMPTE/learnhub`
+- 🔗 **Démo en ligne :** `https://learnhub-six-delta.vercel.app/`
+- 💻 **Code source :** `https://github.com/wilfriedtankwe/learnhub`
 
 ---
 
