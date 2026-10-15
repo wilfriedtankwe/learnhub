@@ -132,20 +132,6 @@ Les fichiers générés se trouvent dans `dist/`.
 3. Output directory : `dist/learnhub/browser` (à adapter selon le nom du projet).
 4. Ajouter un fichier `vercel.json` pour que le routing Angular fonctionne au rechargement :
 
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
-```
-
-### GitHub Pages
-
-```bash
-ng build --base-href /learnhub/
-```
-
-Publier ensuite le contenu du dossier `dist/learnhub/browser` et copier `index.html` en `404.html` pour gérer les routes.
-
 ---
 
 ## Structure du projet
